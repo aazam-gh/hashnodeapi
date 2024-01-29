@@ -15,4 +15,4 @@ jobs:
       - name: Run blog script
         run: node blog.js
         env:
-          host: ${{ secrets.HASNODE_BLOG_NAME }}
+          host: ${{ secrets.HASHNODE_BLOG_NAME }}
