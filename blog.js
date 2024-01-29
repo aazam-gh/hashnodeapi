@@ -1,6 +1,6 @@
 const core = require('@actions/core');
 const { request } = require('graphql-request')
-const host = core.getInput('host');
+const host = process.env.host;
 
 const query = `
 query Publication($host: String!) {
