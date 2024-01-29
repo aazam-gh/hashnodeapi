@@ -1,8 +1,10 @@
+const core = require('@actions/core');
 const { request } = require('graphql-request')
+const host = core.getInput('host');
 
 const query = `
-query Publication {
- publication(host: "alcadeus.hashnode.dev") {
+query Publication($host: String!) {
+ publication(host: $host) {
     isTeam
     title
     posts(first: 10) {
@@ -18,5 +20,5 @@ query Publication {
 }
 `
 
-request('https://api.example.com/graphql', query)
+request('https://gql.hashnode.com', query, { host: host})
  .then((data) => console.log(data))

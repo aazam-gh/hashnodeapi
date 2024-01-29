@@ -13,4 +13,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run blog script
-        run: node ./blog.js
+        uses: your-username/your-repo@main
+        with:
+          host: ${{ secrets.HASNODE_BLOG_NAME }}
