@@ -12,5 +12,7 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: npm ci
+      - name: Run blog script
+        run: node blog.js
         with:
           host: ${{ secrets.HASNODE_BLOG_NAME }}
