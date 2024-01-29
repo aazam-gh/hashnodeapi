@@ -13,6 +13,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run blog script
-        uses: your-username/your-repo@main
+        uses: aazam-gh/hashnodeapi@main
         with:
           host: ${{ secrets.HASNODE_BLOG_NAME }}
