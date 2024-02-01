@@ -156,7 +156,7 @@ async function run() {
 
 
   request("https://gql.hashnode.com", query, { host: host })
-    .then((data) => console.log(data[0]))
+    .then((data) => console.log(data))
     .catch((error) => core.setFailed(error.message));
 }
 
