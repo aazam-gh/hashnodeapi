@@ -19,7 +19,6 @@ async function fetchPR(owner, repo) {
       }
     );
     const latestPullRequest = data[0]["number"];
-    console.log(latestPullRequest);
     return latestPullRequest;
   } catch (error) {
     console.error(error);
@@ -37,9 +36,12 @@ async function fetchCommits(owner, repo, pr) {
         },
       }
     );
+    let allCommits = "";
+
     for (let i = 0; i < data.length; i++) {
-      console.log(data[i]["commit"]["message"]);
+      allCommits += data[i]["commit"]["message"] + "\n";
     }
+    return allCommits;
   } catch (error) {
     console.error(error);
   }
@@ -58,9 +60,11 @@ async function fetchFiles(owner, repo, pr) {
         },
       }
     );
+    let allFiles = "";
     for (let i = 0; i < data.length; i++) {
-      console.log(data[i]["patch"]);
+      allFiles += data[i]["patch"] + "\n";
     }
+    return allFiles;
   } catch (error) {
     console.error(error);
   }
@@ -77,9 +81,11 @@ async function fetchComments(owner, repo, pr) {
         },
       }
     );
+    let allComments = "";
     for (let i = 0; i < data.length; i++) {
-      console.log(data[i]["body_text"]);
+      allComments += data[i]["body_text"] + "\n";
     }
+    return allComments;
   } catch (error) {
     console.error(error);
   }
@@ -96,10 +102,11 @@ async function fetchReviews(owner, repo, pr) {
         },
       }
     );
+    let allReviews = "";
     for (let i = 0; i < data.length; i++) {
-      console.log(data[i]["body"]);
-      console.log(data[i]["diff_hunk"]);
+      allReviews += data[i]["body"] + "\n" + data[i]["diff_hunk"] + "\n";
     }
+    return allReviews;
   } catch (error) {
     console.error(error);
   }
@@ -116,8 +123,9 @@ async function fetchPRInfo(owner, repo, pr) {
         },
       }
     );
-    console.log(data["title"]);
-    console.log(data["body"]);
+    const title = data["title"];
+    const body = data["body"];
+    return { title, body };
   } catch (error) {
     console.error(error);
   }
@@ -127,35 +135,116 @@ async function run() {
   const owner = process.env.OWNER;
   const repo = process.env.REPO;
   const host = process.env.HOST;
-  const githubToken = process.env.GITHUB_TOKEN;
+  const pat = process.env.PAT;
 
   const pr = await fetchPR(owner, repo);
-  await fetchPRInfo(owner, repo, pr);
-  await fetchFiles(owner, repo, pr);
-  await fetchReviews(owner, repo, pr);
-  await fetchComments(owner, repo, pr);
-  await fetchCommits(owner, repo, pr);
+  const { title, body } = await fetchPRInfo(owner, repo, pr);
+  const files = await fetchFiles(owner, repo, pr);
+  const reviews = await fetchReviews(owner, repo, pr);
+  const comments = await fetchComments(owner, repo, pr);
+  const commits = await fetchCommits(owner, repo, pr);
+  const summary =
+    title +
+    "\n" +
+    body +
+    "\n" +
+    files +
+    "\n" +
+    reviews +
+    "\n" +
+    comments +
+    "\n" +
+    commits;
 
   const query = `
- query Publication($host: String!) {
-    publication(host: $host) {
-      isTeam
-      title
-      posts(first: 10) {
-        edges {
-          node {
-            title
-            brief
-            url
-          }
+  mutation PublishPost($input: PublishPostInput!) {
+    publishPost(input: $input) {
+      post {
+        id
+        slug
+        title
+        subtitle
+        author {
+          ...UserFragment
+        }
+        coAuthors {
+          ...UserFragment
+        }
+        tags {
+          ...TagFragment
+        }
+        url
+        canonicalUrl
+        publication {
+          ...PublicationFragment
+        }
+        cuid
+        coverImage {
+          ...PostCoverImageFragment
+        }
+        brief
+        readTimeInMinutes
+        views
+        series {
+          ...SeriesFragment
+        }
+        reactionCount
+        replyCount
+        responseCount
+        featured
+        contributors {
+          ...UserFragment
+        }
+        commenters {
+          ...PostCommenterConnectionFragment
+        }
+        comments {
+          ...PostCommentConnectionFragment
+        }
+        bookmarked
+        content {
+          ...ContentFragment
+        }
+        likedBy {
+          ...PostLikerConnectionFragment
+        }
+        featuredAt
+        publishedAt
+        updatedAt
+        preferences {
+          ...PostPreferencesFragment
+        }
+        audioUrls {
+          ...AudioUrlsFragment
+        }
+        seo {
+          ...SEOFragment
+        }
+        ogMetaData {
+          ...OpenGraphMetaDataFragment
+        }
+        hasLatexInPost
+        isFollowed
+        isAutoPublishedFromRSS
+        features {
+          ...PostFeaturesFragment
         }
       }
     }
- }
+  }
  `;
 
+ const input = {
+  
+ }
 
-  request("https://gql.hashnode.com", query, { host: host })
+
+
+  request("https://gql.hashnode.com", query, { host: host }, {
+    headers:{
+      "Authorization": pat,
+    }
+  })
     .then((data) => console.log(data))
     .catch((error) => core.setFailed(error.message));
 }

@@ -21,7 +21,9 @@ jobs:
       - name: Run script  
         env:
           HOST: ${{ secrets.HASHNODE_BLOG_NAME }}
+          PAT: ${{ secrets.HASHNODE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OWNER: ${{ env.OWNER }}
-          REPO: ${{ env.REPO }} 
+          REPO: ${{ env.REPO }}
+
         run: node hashnode-blog.js
