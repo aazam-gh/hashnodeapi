@@ -17,7 +17,7 @@ jobs:
           echo "REPO=${{ github.event.repository.name }}" >> $GITHUB_ENV
       - name: Run script  
         env:
-          host: ${{ secrets.HASHNODE_BLOG_NAME }}
+          HOST: ${{ secrets.HASHNODE_BLOG_NAME }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OWNER: ${{ env.OWNER }}
           REPO: ${{ env.REPO }} 
