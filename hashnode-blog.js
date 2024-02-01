@@ -137,7 +137,7 @@ async function run() {
 
   const query = `
  query Publication($host: String!) {
-    publication(host: $host) {
+    publication(host: ${host}) {
       isTeam
       title
       posts(first: 10) {
