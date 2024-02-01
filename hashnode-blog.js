@@ -19,6 +19,7 @@ async function fetchPR(owner, repo) {
       }
     );
     const latestPullRequest = data[0]["number"];
+    console.log(latestPullRequest);
     return latestPullRequest;
   } catch (error) {
     console.error(error);
@@ -155,7 +156,7 @@ async function run() {
 
 
   request("https://gql.hashnode.com", query, { host: host })
-    .then((data) => console.log(data))
+    .then((data) => console.log(data[0]))
     .catch((error) => core.setFailed(error.message));
 }
 
