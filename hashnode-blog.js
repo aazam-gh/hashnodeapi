@@ -1,22 +1,23 @@
-const core = require('@actions/core');
-const { request } = require('graphql-request');
-const { main } = require('./github-api')
+const core = require("@actions/core");
+const { request } = require("graphql-request");
 const { Octokit } = require("octokit");
 const octokit = new Octokit({});
 
-
 async function fetchPR(owner, repo) {
   try {
-    const { data } = await octokit.request(`GET /repos/${owner}/${repo}/pulls`, {
-      sort: "updated",
-      state: "closed",
-      direction: "desc",
-      per_page: 1,
-      headers: {
-        "X-GitHub-Api-Version": "2022-11-28",
-        Accept: "application/vnd.github.raw+json",
-      },
-    });
+    const { data } = await octokit.request(
+      `GET /repos/${owner}/${repo}/pulls`,
+      {
+        sort: "updated",
+        state: "closed",
+        direction: "desc",
+        per_page: 1,
+        headers: {
+          "X-GitHub-Api-Version": "2022-11-28",
+          Accept: "application/vnd.github.raw+json",
+        },
+      }
+    );
     const latestPullRequest = data[0]["number"];
     return latestPullRequest;
   } catch (error) {
@@ -103,7 +104,6 @@ async function fetchReviews(owner, repo, pr) {
   }
 }
 
-
 async function fetchPRInfo(owner, repo, pr) {
   try {
     const { data } = await octokit.request(
@@ -122,27 +122,18 @@ async function fetchPRInfo(owner, repo, pr) {
   }
 }
 
-
-async function main(owner, repo) {
-    const pr = await fetchPR(owner, repo);
-    await fetchPRInfo(owner, repo, pr);
-    await fetchFiles(owner, repo, pr);
-    await fetchReviews(owner, repo, pr);
-    await fetchComments(owner, repo, pr);
-    await fetchCommits(owner, repo, pr);
-  }
-
-
-
 async function run() {
- const host = core.getInput('host');
- const owner = core.getInput('OWNER');
- const repo = core.getInput('REPO');
+  const host = core.getInput("host");
+  const owner = core.getInput("OWNER");
+  const repo = core.getInput("REPO");
+  const pr = await fetchPR(owner, repo);
+  await fetchPRInfo(owner, repo, pr);
+  await fetchFiles(owner, repo, pr);
+  await fetchReviews(owner, repo, pr);
+  await fetchComments(owner, repo, pr);
+  await fetchCommits(owner, repo, pr);
 
- await main(owner, repo);
-
-
- const query = `
+  const query = `
  query Publication($host: String!) {
     publication(host: $host) {
       isTeam
@@ -160,9 +151,9 @@ async function run() {
  }
  `;
 
- const variables = { host };
+  const variables = { host };
 
- request('https://gql.hashnode.com', query, variables)
+  request("https://gql.hashnode.com", query, variables)
     .then((data) => console.log(data))
     .catch((error) => core.setFailed(error.message));
 }
