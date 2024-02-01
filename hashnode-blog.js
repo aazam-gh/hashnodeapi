@@ -136,8 +136,8 @@ async function run() {
   await fetchCommits(owner, repo, pr);
 
   const query = `
- query Publication() {
-    publication(host: ${host}) {
+ query Publication($host: String!) {
+    publication(host: $host) {
       isTeam
       title
       posts(first: 10) {
@@ -154,7 +154,7 @@ async function run() {
  `;
 
 
-  request("https://gql.hashnode.com", query)
+  request("https://gql.hashnode.com", query, { host: host })
     .then((data) => console.log(data))
     .catch((error) => core.setFailed(error.message));
 }
