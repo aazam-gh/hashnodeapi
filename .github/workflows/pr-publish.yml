@@ -4,16 +4,21 @@ jobs:
  blog_post:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 20.x
-          cache: npm
-      - name: Install
-        run: npm ci
+          node-version: '20.x'
+          cache: 'npm'
+      - run: npm ci
+      - name : Set enviornment variables
+        run : |
+          echo "OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
+          echo "REPO=${{ github.event.repository.name }}" >> $GITHUB_ENV
       - name: Run script  
-        run: node blog.js
         env:
           host: ${{ secrets.HASHNODE_BLOG_NAME }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ env.OWNER }}
+          REPO: ${{ env.REPO }} 
+        run: node ./github/workflows/blog.js
