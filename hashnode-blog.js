@@ -123,9 +123,11 @@ async function fetchPRInfo(owner, repo, pr) {
 }
 
 async function run() {
-  const host = core.getInput("host");
-  const owner = core.getInput("OWNER");
-  const repo = core.getInput("REPO");
+  const owner = process.env.OWNER;
+  const repo = process.env.REPO;
+  const host = process.env.HOST;
+  const githubToken = process.env.GITHUB_TOKEN;
+
   const pr = await fetchPR(owner, repo);
   await fetchPRInfo(owner, repo, pr);
   await fetchFiles(owner, repo, pr);
