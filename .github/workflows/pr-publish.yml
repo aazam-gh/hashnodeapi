@@ -21,4 +21,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OWNER: ${{ env.OWNER }}
           REPO: ${{ env.REPO }} 
-        run: node ./github/workflows/blog.js
+        run: node ./github/workflows/hashnode-blog.js
