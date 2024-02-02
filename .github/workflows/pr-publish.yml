@@ -25,5 +25,6 @@ jobs:
           PUBID: ${{ secrets.HASHNODE_PUBLICATION_ID }}
           OWNER: ${{ env.OWNER }}
           REPO: ${{ env.REPO }}
+          COHERE: ${{ secrets.COHERE_API_KEY }}
 
         run: node hashnode-blog.js

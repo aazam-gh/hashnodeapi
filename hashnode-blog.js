@@ -1,6 +1,7 @@
 const core = require("@actions/core");
 const { request } = require("graphql-request");
 const { Octokit } = require("octokit");
+const { CohereClient } = require("cohere-ai");
 
 const octokit = new Octokit({});
 
@@ -138,6 +139,7 @@ async function run() {
   const host = process.env.HOST;
   const pubID = process.env.PUBID;
   const pat = process.env.PAT;
+  const co = process.env.COHERE;
 
   const pr = await fetchPR(owner, repo);
   const { title, body } = await fetchPRInfo(owner, repo, pr);
@@ -145,23 +147,24 @@ async function run() {
   const reviews = await fetchReviews(owner, repo, pr);
   const comments = await fetchComments(owner, repo, pr);
   const commits = await fetchCommits(owner, repo, pr);
-  const summary =
-    title +
-    "\n" +
-    body +
-    "\n" +
-    "Few of the files changed \n ```" +
-    files +
-    "\n" +
-    "The reviews between collaborators" +
-    "\n" +
-    reviews +
-    "\n" +
-    "The comments on the PR" +
-    comments +
-    "\n" +
-    "The commits made on the PR" +
-    commits;
+
+  const cohere = new CohereClient({
+    token: co, // This is your trial API key
+  });
+
+  const generatedText = async () => {
+    const response = await cohere.generate({
+      model: "command",
+      prompt: `I will provide you details of a pull request, including some of the files, review comments, and information. I want you to generate a blog post about it in markdown format. The details of the pull request are as follows: ${body}. Some of the files which have been changed ${files}. Any of the reviews ${reviews}. Any of the comments ${comments}. The commit messages ${commits}.`,
+      maxTokens: 300,
+      temperature: 0.3,
+      k: 0,
+      stopSequences: [],
+      returnLikelihoods: "NONE",
+    });
+    return `${response.generations[0].text}`;
+  };
+  const content = generatedText();
 
   const query = `
     mutation PublishPost($input: PublishPostInput!) {
@@ -178,7 +181,7 @@ async function run() {
   const input = {
     title: title,
     publicationId: pubID,
-    contentMarkdown: summary,
+    contentMarkdown: content,
     tags: [
       {
         slug: title + "-pr",
