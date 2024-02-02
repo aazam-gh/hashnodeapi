@@ -135,6 +135,7 @@ async function run() {
   const owner = process.env.OWNER;
   const repo = process.env.REPO;
   const host = process.env.HOST;
+  const pubID = process.env.PUBID;
   const pat = process.env.PAT;
 
   const pr = await fetchPR(owner, repo);
@@ -163,90 +164,32 @@ async function run() {
         id
         slug
         title
-        subtitle
-        author {
-          ...UserFragment
-        }
-        coAuthors {
-          ...UserFragment
-        }
         tags {
-          ...TagFragment
-        }
-        url
-        canonicalUrl
-        publication {
-          ...PublicationFragment
-        }
-        cuid
-        coverImage {
-          ...PostCoverImageFragment
-        }
-        brief
-        readTimeInMinutes
-        views
-        series {
-          ...SeriesFragment
-        }
-        reactionCount
-        replyCount
-        responseCount
-        featured
-        contributors {
-          ...UserFragment
-        }
-        commenters {
-          ...PostCommenterConnectionFragment
-        }
-        comments {
-          ...PostCommentConnectionFragment
-        }
-        bookmarked
-        content {
-          ...ContentFragment
-        }
-        likedBy {
-          ...PostLikerConnectionFragment
-        }
-        featuredAt
-        publishedAt
-        updatedAt
-        preferences {
-          ...PostPreferencesFragment
-        }
-        audioUrls {
-          ...AudioUrlsFragment
-        }
-        seo {
-          ...SEOFragment
-        }
-        ogMetaData {
-          ...OpenGraphMetaDataFragment
-        }
-        hasLatexInPost
-        isFollowed
-        isAutoPublishedFromRSS
-        features {
-          ...PostFeaturesFragment
         }
       }
     }
   }
  `;
 
- const input = {
-  
- }
+  const input = {
+    title: title,
+    publicationId: pubID,
+    contentMarkdown: "random content",
+    tags: [
+      {
+        slug: title,
+        name: title,
+      },
+    ],
+  };
 
+  const headers = {
+    Authorization: pat,
+  };
 
-
-  request("https://gql.hashnode.com", query, { host: host }, {
-    headers:{
-      "Authorization": pat,
-    }
-  })
+  request("https://gql.hashnode.com", query, { input }, headers)
     .then((data) => console.log(data))
-    .catch((error) => core.setFailed(error.message));
+    .catch((error) => console.error(error));
 }
 
 run().catch((error) => core.setFailed(error.message));

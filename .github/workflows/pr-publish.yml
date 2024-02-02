@@ -22,7 +22,7 @@ jobs:
         env:
           HOST: ${{ secrets.HASHNODE_BLOG_NAME }}
           PAT: ${{ secrets.HASHNODE_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBID: ${{ secrets.HASHNODE_PUBLICATION_ID }}
           OWNER: ${{ env.OWNER }}
           REPO: ${{ env.REPO }}
 

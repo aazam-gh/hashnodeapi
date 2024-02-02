@@ -1,6 +1,5 @@
 const { request } = require("graphql-request");
 
-
 const query = `
   mutation PublishPost($input: PublishPostInput!) {
     publishPost(input: $input) {
@@ -8,45 +7,29 @@ const query = `
         id
         slug
         title
-        subtitle
-        url
-        canonicalUrl
-        cuid
-        brief
-        readTimeInMinutes
-        views
-        reactionCount
-        replyCount
-        responseCount
-        featured
-        featuredAt
-        publishedAt
-        updatedAt
-        hasLatexInPost
-        isFollowed
         isAutoPublishedFromRSS
       }
     }
   }
  `;
 
-const customObjectId = generateObjectId();
-
 const input = {
   title: "Testing the title",
   subtitle: "Testing the subtitle",
-  publicationId: customObjectId,
+  publicationId: "65b4ce9bf826b65f627bc286",
   contentMarkdown: "random content",
+  tags: [
+    {
+      "slug": "test1",
+      "name": "test2"
+    },
+  ],
 };
 
-request(
-  "https://gql.hashnode.com",
-  query,
-  { input: input },
-  {
-    headers: {
-      Authorization: "f5a5ab11-1a11-49ba-baf3-298e63e37ea7",
-    },
-  }
-).then((data) => console.log(data))
+const headers = {
+  Authorization: "f5a5ab11-1a11-49ba-baf3-298e63e37ea7",
+};
 
+request("https://gql.hashnode.com", query, { input }, headers)
+  .then((data) => console.log(data))
+  .catch((error) => console.error(error));
