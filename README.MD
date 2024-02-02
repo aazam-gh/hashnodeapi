@@ -4,7 +4,7 @@ This repository contains a GitHub Actions workflow that allows you to automatica
 
 ## Workflow Overview
 
-The workflow is triggered on every push to the main branch. It sets up a Node.js environment, installs the necessary dependencies, sets up the environment variables, and runs a script (`hashnode-blog.js`) that handles the publishing of the blog post.
+The workflow is triggered on every pull request merged into to the main branch. It sets up a Node.js environment, installs the necessary dependencies, sets up the environment variables, and runs a script (`hashnode-blog.js`) that handles the publishing of the blog post.
 
 ## Prerequisites
 
