@@ -158,23 +158,21 @@ async function run() {
     commits;
 
   const query = `
-  mutation PublishPost($input: PublishPostInput!) {
-    publishPost(input: $input) {
-      post {
-        id
-        slug
-        title
-        tags {
+    mutation PublishPost($input: PublishPostInput!) {
+      publishPost(input: $input) {
+        post {
+          id
+          slug
+          title
         }
       }
     }
-  }
- `;
+   `;
 
   const input = {
     title: title,
     publicationId: pubID,
-    contentMarkdown: "random content",
+    contentMarkdown: summary,
     tags: [
       {
         slug: title,
