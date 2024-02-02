@@ -1,4 +1,4 @@
-name: Hello World Workflow
+name: Hashnode-PR Publish
 on: 
   push:
     branches:
