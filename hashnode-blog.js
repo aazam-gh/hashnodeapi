@@ -164,7 +164,7 @@ async function run() {
     });
     return `${response.generations[0].text}`;
   };
-  const content = generatedText();
+  const content = await generatedText();
 
   const query = `
     mutation PublishPost($input: PublishPostInput!) {
