@@ -1,6 +1,7 @@
 const core = require("@actions/core");
 const { request } = require("graphql-request");
 const { Octokit } = require("octokit");
+
 const octokit = new Octokit({});
 
 async function fetchPR(owner, repo) {
@@ -149,12 +150,17 @@ async function run() {
     "\n" +
     body +
     "\n" +
+    "Few of the files changed \n ```" +
     files +
+    "\n" +
+    "The reviews between collaborators" +
     "\n" +
     reviews +
     "\n" +
+    "The comments on the PR" +
     comments +
     "\n" +
+    "The commits made on the PR" +
     commits;
 
   const query = `
@@ -175,8 +181,8 @@ async function run() {
     contentMarkdown: summary,
     tags: [
       {
-        slug: title,
-        name: title,
+        slug: title + "-pr",
+        name: title + "-pr",
       },
     ],
   };
