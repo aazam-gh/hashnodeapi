@@ -136,7 +136,6 @@ async function fetchPRInfo(owner, repo, pr) {
 async function run() {
   const owner = process.env.OWNER;
   const repo = process.env.REPO;
-  const host = process.env.HOST;
   const pubID = process.env.PUBID;
   const pat = process.env.PAT;
   const co = process.env.COHERE;
